@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<title>Resume Analyzer Dashboard</title>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+<style>
+
+/* Background */
+
+body{
+margin:0;
+height:100vh;
+font-family:"Segoe UI", Arial, sans-serif;
+
+background-image:
+linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+url("{{ url_for('static', filename='Dashboard.jpg') }}");
+
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+}
+
+/* Navbar */
+
+.navbar{
+background:black;
+padding:12px 30px;
+}
+
+.logo{
+height:40px;
+margin-right:10px;
+}
+
+.navbar-brand{
+display:flex;
+align-items:center;
+color:white !important;
+font-size:22px;
+font-weight:600;
+}
+
+/* Buttons */
+
+.nav-btn{
+border-radius:8px;
+padding:6px 18px;
+font-weight:500;
+margin-left:8px;
+}
+
+.btn-outline-light:hover{
+background:white;
+color:black;
+}
+
+.btn-light:hover{
+background:#ddd;
+}
+
+/* Glass Dashboard Box */
+
+.dashboard-box{
+
+background:rgba(255,255,255,0.1);
+backdrop-filter: blur(12px);
+
+border-radius:15px;
+border:1px solid rgba(255,255,255,0.2);
+
+padding:50px;
+
+max-width:600px;
+margin:150px auto;
+
+color:white;
+
+text-align:center;
+
+box-shadow:0 8px 30px rgba(0,0,0,0.4);
+}
+
+/* Title */
+
+.dashboard-box h1{
+font-size:40px;
+font-weight:800;
+margin-bottom:15px;
+}
+
+/* Subtitle */
+
+.dashboard-box p{
+font-size:18px;
+margin-bottom:25px;
+}
+
+/* Button */
+
+.btn-custom{
+background:#112056;
+color:white;
+
+font-size:18px;
+font-weight:bold;
+
+padding:12px 25px;
+
+border-radius:8px;
+border:none;
+}
+
+.btn-custom:hover{
+background:white;
+color:#112056;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- Navbar -->
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+
+<div class="container-fluid">
+
+<!-- Logo -->
+<a class="navbar-brand" href="/">
+<img src="{{ url_for('static', filename='Logo.jpg') }}" class="logo">
+Resume Tracking System
+</a>
+
+<!-- Toggle Button (Mobile) -->
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+<span class="navbar-toggler-icon"></span>
+</button>
+
+<!-- Right Side Buttons -->
+<div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+
+<a href="/" class="btn btn-outline-light nav-btn">Home</a>
+<a href="/login" class="btn btn-light nav-btn">Login</a>
+<a href="/register" class="btn btn-light nav-btn">Register</a>
+
+</div>
+
+</div>
+
+</nav>
+
+<!-- Dashboard Content -->
+
+<div class="dashboard-box">
+
+<h1>Resume Analyzer</h1>
+
+<p>
+Upload your resume and check how well it matches a job description.
+</p>
+
+<a href="/upload" class="btn btn-custom">
+Upload Resume
+</a>
+
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

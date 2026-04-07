@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Resume Tracking System</title>
+
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+<style>
+
+body{
+margin:0;
+font-family:"Segoe UI", Arial;
+}
+
+.home-bg{
+background-image:
+linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)),
+url("{{ url_for('static', filename='Index.jpg') }}");
+
+background-size:cover;
+background-position:center;
+height:100vh;
+}
+
+/* Navbar */
+
+.logo{
+height:40px;
+margin-right:10px;
+}
+
+/* Hero Section */
+
+.hero-section{
+color:white;
+text-align:center;
+margin-top:140px;
+}
+
+.title{
+font-size:52px;
+font-weight:700;
+}
+
+.tagline{
+font-size:22px;
+margin-top:10px;
+}
+
+.subtitle{
+font-size:18px;
+max-width:600px;
+margin:auto;
+margin-top:15px;
+}
+
+.btn-custom{
+background:white;
+color:black;
+padding:14px 34px;
+font-size:18px;
+border-radius:8px;
+border:none;
+}
+
+.btn-custom:hover{
+background:#184579;
+}
+
+</style>
+
+</head>
+
+<body class="home-bg">
+
+<!-- Navbar -->
+
+<nav class="navbar navbar-dark bg-dark px-4">
+
+<div class="d-flex align-items-center">
+
+<img src="{{ url_for('static', filename='Logo.jpg') }}" class="logo">
+
+<span class="navbar-brand fw-bold fs-4">
+Resume Tracking System
+</span>
+
+</div>
+
+<div class="ms-auto">
+
+<a href="/" class="btn btn-outline-light me-2">Home</a>
+<a href="/login" class="btn btn-light me-2">Login</a>
+<a href="/register" class="btn btn-light me-2">Register</a>
+
+</div>
+
+</nav>
+
+<!-- Hero -->
+
+<div class="hero-section">
+
+<h1 class="title">Smart Resume Analyzer</h1>
+
+<p class="tagline">
+Match Your Resume With The Perfect Job
+</p>
+
+<p class="subtitle">
+Upload your resume and analyze how well it matches job descriptions.
+Improve your chances of getting shortlisted by recruiters.
+</p>
+
+<a href="/login" class="btn btn-custom mt-4">
+Start Resume Analysis
+</a>
+
+</div>
+
+</body>
+</html>
