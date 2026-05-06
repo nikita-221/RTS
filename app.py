@@ -19,7 +19,6 @@ def get_db():
     conn.row_factory = sqlite3.Row
     return conn
 
-
 def create_tables():
     conn = get_db()
     cur = conn.cursor()
