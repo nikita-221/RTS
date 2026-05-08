@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>AI Resume Analyzer</title>
 
 <link rel="stylesheet"
@@ -30,22 +28,15 @@ overflow-x:hidden;
 }
 
 /* Background */
-
 .home-bg{
-
 min-height:100vh;
-
-background-image:
-linear-gradient(rgba(4,10,25,0.78),rgba(4,10,25,0.78)),
-url("{{ url_for('static', filename='Dashboard.jpg') }}");
-
+background-image: linear-gradient(rgba(4,10,25,0.78),rgba(4,10,25,0.78)), url("{{ url_for('static', filename='Dashboard.jpg') }}");
 background-size:cover;
 background-position:center;
 background-repeat:no-repeat;
 }
 
 /* Navbar */
-
 .navbar{
 background:rgba(0,0,0,0.45);
 backdrop-filter:blur(12px);
@@ -95,7 +86,6 @@ background:#dbeafe;
 }
 
 /* Main Container */
-
 .hero-container{
 display:flex;
 justify-content:space-between;
@@ -106,7 +96,6 @@ gap:70px;
 }
 
 /* Left Content */
-
 .hero-content{
 max-width:650px;
 color:white;
@@ -151,7 +140,6 @@ margin-bottom:35px;
 }
 
 /* Features */
-
 .hero-features{
 display:flex;
 flex-direction:column;
@@ -173,28 +161,16 @@ color:#60a5fa;
 }
 
 /* Upload Card */
-
 .upload-card{
-
 width:100%;
 max-width:500px;
-
 padding:40px;
-
 border-radius:28px;
-
 background:rgba(255,255,255,0.08);
-
 backdrop-filter:blur(20px);
-
 border:1px solid rgba(255,255,255,0.12);
-
-box-shadow:
-0 10px 45px rgba(0,0,0,0.45),
-0 0 20px rgba(37,99,235,0.12);
-
+box-shadow: 0 10px 45px rgba(0,0,0,0.45), 0 0 20px rgba(37,99,235,0.12);
 color:white;
-
 animation:fadeIn 1s ease;
 }
 
@@ -213,7 +189,6 @@ margin-bottom:30px;
 }
 
 /* Labels */
-
 .form-label{
 font-size:15px;
 font-weight:600;
@@ -221,7 +196,6 @@ margin-bottom:10px;
 }
 
 /* Inputs */
-
 .form-control{
 background:rgba(255,255,255,0.92);
 border:none;
@@ -236,7 +210,6 @@ border:2px solid #3b82f6;
 }
 
 /* Upload Area */
-
 .upload-box{
 border:2px dashed rgba(255,255,255,0.3);
 border-radius:18px;
@@ -270,13 +243,11 @@ color:#d1d5db;
 }
 
 /* Textarea */
-
 textarea{
 resize:none;
 }
 
 /* Button */
-
 .btn-custom{
 width:100%;
 background:linear-gradient(135deg,#2563eb,#1d4ed8);
@@ -296,7 +267,6 @@ box-shadow:0 10px 25px rgba(59,130,246,0.4);
 }
 
 /* Bottom Features */
-
 .ai-tools{
 display:flex;
 justify-content:space-between;
@@ -332,7 +302,6 @@ margin:0;
 }
 
 /* Animation */
-
 @keyframes slideLeft{
 from{
 opacity:0;
@@ -356,7 +325,6 @@ transform:translateY(0);
 }
 
 /* Responsive */
-
 @media(max-width:1100px){
 
 .hero-container{

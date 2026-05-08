@@ -1,13 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <title>AI Recommendations</title>
-
 <!-- Bootstrap -->
 <link rel="stylesheet"
 href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
@@ -31,21 +27,15 @@ box-sizing:border-box;
 body{
 min-height:100vh;
 font-family:'Poppins',sans-serif;
-
-background:
-linear-gradient(rgba(5,10,25,0.78), rgba(5,10,25,0.78)),
-url("{{ url_for('static', filename='Dashboard.jpg') }}");
-
+background: linear-gradient(rgba(5,10,25,0.78), rgba(5,10,25,0.78)), url("{{ url_for('static', filename='Dashboard.jpg') }}");
 background-size:cover;
 background-position:center;
 background-repeat:no-repeat;
-
 color:white;
 overflow-x:hidden;
 }
 
 /* Navbar */
-
 .navbar{
 background:rgba(0,0,0,0.35);
 backdrop-filter:blur(12px);
@@ -63,10 +53,8 @@ margin-right:12px;
 .navbar-brand{
 display:flex;
 align-items:center;
-
 font-size:25px;
 font-weight:700;
-
 color:white !important;
 letter-spacing:0.5px;
 }
@@ -94,7 +82,6 @@ background:#dbeafe;
 }
 
 /* Main Container */
-
 .main-container{
 padding:55px 20px;
 display:flex;
@@ -103,31 +90,19 @@ align-items:center;
 }
 
 /* Recommendations Card */
-
 .recommendations-card{
-
 width:100%;
 max-width:1050px;
-
 padding:45px;
-
 border-radius:30px;
-
 background:rgba(255,255,255,0.08);
-
 backdrop-filter:blur(20px);
-
 border:1px solid rgba(255,255,255,0.12);
-
-box-shadow:
-0 12px 40px rgba(0,0,0,0.5),
-0 0 30px rgba(59,130,246,0.18);
-
+box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 30px rgba(59,130,246,0.18);
 animation:fadeIn 1s ease;
 }
 
 /* Header */
-
 .recommendations-header{
 text-align:center;
 margin-bottom:40px;
@@ -135,20 +110,13 @@ margin-bottom:40px;
 
 .ai-badge{
 display:inline-block;
-
 padding:10px 22px;
-
 border-radius:30px;
-
 background:rgba(96,165,250,0.14);
-
 border:1px solid rgba(96,165,250,0.35);
-
 color:#93c5fd;
-
 font-size:14px;
 font-weight:600;
-
 margin-bottom:24px;
 }
 
@@ -167,7 +135,6 @@ line-height:1.9;
 }
 
 /* Accordion */
-
 .accordion-item{
 background:rgba(255,255,255,0.05) !important;
 border:1px solid rgba(255,255,255,0.08) !important;
@@ -189,7 +156,6 @@ line-height:1.8;
 }
 
 /* Buttons */
-
 .action-buttons{
 display:flex;
 gap:20px;
@@ -199,22 +165,15 @@ flex-wrap:wrap;
 
 .btn-custom{
 flex:1;
-
 padding:15px;
-
 border:none;
 border-radius:14px;
-
 font-size:16px;
 font-weight:600;
-
 background:linear-gradient(135deg,#2563eb,#1d4ed8);
-
 color:white;
-
 text-align:center;
 text-decoration:none;
-
 transition:0.3s;
 }
 
@@ -226,22 +185,14 @@ color:white;
 
 .btn-secondary-custom{
 flex:1;
-
 padding:15px;
-
 border-radius:14px;
-
 background:rgba(255,255,255,0.08);
-
 border:1px solid rgba(255,255,255,0.15);
-
 color:white;
-
 text-align:center;
 text-decoration:none;
-
 font-weight:600;
-
 transition:0.3s;
 }
 

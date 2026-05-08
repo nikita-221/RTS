@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <title>AI Resume Dashboard</title>
 
 <link rel="stylesheet"
@@ -28,18 +26,15 @@ body{
 font-family:'Poppins',sans-serif;
 min-height:100vh;
 overflow-x:hidden;
-
 background-image:
 linear-gradient(rgba(5,10,25,0.72), rgba(5,10,25,0.72)),
 url("{{ url_for('static', filename='Dashboard.jpg') }}");
-
 background-size:cover;
 background-position:center;
 background-repeat:no-repeat;
 }
 
 /* Navbar */
-
 .navbar{
 background:rgba(0,0,0,0.35);
 backdrop-filter:blur(12px);
@@ -85,7 +80,6 @@ background:#dbeafe;
 }
 
 /* Main Section */
-
 .dashboard-wrapper{
 min-height:90vh;
 display:flex;
@@ -95,34 +89,22 @@ padding:60px 20px;
 }
 
 /* Glass Card */
-
 .dashboard-box{
 
 width:100%;
 max-width:720px;
-
 padding:50px;
-
 border-radius:28px;
-
 background:rgba(255,255,255,0.08);
-
 backdrop-filter:blur(18px);
-
 border:1px solid rgba(255,255,255,0.12);
-
-box-shadow:
-0 10px 40px rgba(0,0,0,0.5),
-0 0 25px rgba(37,99,235,0.18);
-
+box-shadow: 0 10px 40px rgba(0,0,0,0.5), 0 0 25px rgba(37,99,235,0.18);
 text-align:center;
 color:white;
-
 animation:fadeIn 1s ease;
 }
 
 /* Badge */
-
 .ai-badge{
 display:inline-block;
 padding:10px 22px;
@@ -136,7 +118,6 @@ margin-bottom:25px;
 }
 
 /* Heading */
-
 .dashboard-box h1{
 font-size:52px;
 font-weight:800;
@@ -149,7 +130,6 @@ color:#60a5fa;
 }
 
 /* Subtitle */
-
 .subtitle{
 font-size:17px;
 line-height:1.9;
@@ -160,7 +140,6 @@ margin-bottom:35px;
 }
 
 /* Features */
-
 .features{
 display:grid;
 grid-template-columns:repeat(2,1fr);
@@ -171,11 +150,8 @@ margin-bottom:35px;
 .feature-card{
 padding:20px;
 border-radius:18px;
-
 background:rgba(255,255,255,0.05);
-
 border:1px solid rgba(255,255,255,0.08);
-
 transition:0.3s;
 }
 
@@ -248,7 +224,6 @@ color:#111827;
 }
 
 /* Bottom Stats */
-
 .stats-row{
 display:flex;
 justify-content:space-between;
@@ -276,7 +251,6 @@ color:#d1d5db;
 }
 
 /* Animation */
-
 @keyframes fadeIn{
 from{
 opacity:0;
@@ -289,7 +263,6 @@ transform:translateY(0);
 }
 
 /* Responsive */
-
 @media(max-width:768px){
 
 .dashboard-box{
@@ -321,7 +294,6 @@ flex-direction:column;
 <body>
 
 <!-- Navbar -->
-
 <nav class="navbar navbar-expand-lg navbar-dark px-4 py-3">
 
 <a class="navbar-brand" href="/">
@@ -348,11 +320,8 @@ Register
 </nav>
 
 <!-- Dashboard Section -->
-
 <section class="dashboard-wrapper">
-
 <div class="dashboard-box">
-
 <div class="ai-badge">
 🚀 AI Powered Resume Intelligence
 </div>
@@ -367,7 +336,6 @@ Get real-time ATS match scores, missing skill analysis, resume insights, and per
 </p>
 
 <!-- Features -->
-
 <div class="features">
 
 <div class="feature-card">
@@ -457,7 +425,6 @@ Upload Resume
 </section>
 
 <!-- Bootstrap -->
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
