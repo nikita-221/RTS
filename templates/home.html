@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI Resume Tracking System</title>
+
+<!-- Bootstrap -->
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+<!-- Font Awesome -->
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+rel="stylesheet">
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:'Poppins',sans-serif;
+overflow-x:hidden;
+background:#050816;
+}
+
+/* Background */
+
+.home-bg{
+position:relative;
+min-height:100vh;
+overflow:hidden;
+}
+
+/* Blurred Background Image */
+
+.home-bg::before{
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+
+background:
+linear-gradient(rgba(5,10,25,0.58),rgba(5,10,25,0.58)),
+url("{{ url_for('static', filename='Home.jpg') }}");
+
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+
+filter:blur(2px);
+
+transform:scale(1.02);
+
+z-index:-2;
+}
+
+/* Dark Overlay */
+
+.home-bg::after{
+content:"";
+position:absolute;
+width:100%;
+height:100%;
+top:0;
+left:0;
+
+background:rgba(0,0,0,0.12);
+
+z-index:-1;
+}
+
+/* Navbar */
+
+.navbar{
+background:rgba(0,0,0,0.22);
+
+backdrop-filter:blur(10px);
+
+border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.logo{
+height:42px;
+width:42px;
+
+border-radius:50%;
+
+object-fit:cover;
+
+margin-right:12px;
+
+border:2px solid rgba(255,255,255,0.18);
+}
+
+.navbar-brand{
+display:flex;
+align-items:center;
+
+font-size:21px;
+font-weight:700;
+
+color:white !important;
+}
+
+.nav-btn{
+padding:8px 20px;
+
+border-radius:12px;
+
+font-weight:500;
+
+font-size:14px;
+
+margin-left:10px;
+
+transition:0.3s;
+}
+
+.btn-outline-light:hover{
+background:white;
+color:#111827;
+}
+
+.btn-light{
+background:white;
+color:#111827;
+font-weight:600;
+}
+
+.btn-light:hover{
+background:#dbeafe;
+}
+
+/* Hero Section */
+
+.hero-section{
+display:flex;
+justify-content:center;
+align-items:center;
+
+min-height:88vh;
+
+padding:40px 20px;
+}
+
+/* Main Glass Card */
+
+.hero-content{
+
+max-width:920px;
+width:100%;
+
+padding:55px 50px;
+
+border-radius:28px;
+
+background:rgba(255,255,255,0.08);
+
+backdrop-filter:blur(16px);
+
+border:1px solid rgba(255,255,255,0.12);
+
+box-shadow:
+0 10px 40px rgba(0,0,0,0.45),
+0 0 25px rgba(37,99,235,0.10);
+
+text-align:center;
+
+color:white;
+
+animation:fadeIn 1s ease;
+}
+
+/* AI Badge */
+
+.ai-badge{
+display:inline-block;
+
+padding:9px 22px;
+
+border-radius:40px;
+
+background:rgba(96,165,250,0.14);
+
+border:1px solid rgba(96,165,250,0.30);
+
+color:#93c5fd;
+
+font-size:13px;
+font-weight:600;
+
+margin-bottom:24px;
+}
+
+/* Title */
+
+.title{
+font-size:54px;
+font-weight:800;
+line-height:1.2;
+margin-bottom:18px;
+}
+
+.title span{
+color:#60a5fa;
+text-shadow:0 0 18px rgba(96,165,250,0.30);
+}
+
+/* Tagline */
+
+.tagline{
+font-size:20px;
+font-weight:500;
+color:#dbeafe;
+margin-bottom:18px;
+}
+
+/* Subtitle */
+
+.subtitle{
+font-size:15px;
+line-height:1.8;
+color:#d1d5db;
+
+max-width:760px;
+margin:auto auto 35px;
+}
+
+/* Features */
+
+.features{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:18px;
+
+margin-top:20px;
+margin-bottom:40px;
+}
+
+.feature-box{
+
+padding:22px 18px;
+
+border-radius:16px;
+
+background:rgba(255,255,255,0.05);
+
+border:1px solid rgba(255,255,255,0.08);
+
+transition:0.3s;
+}
+
+.feature-box:hover{
+transform:translateY(-4px);
+background:rgba(255,255,255,0.08);
+}
+
+.feature-box i{
+font-size:28px;
+color:#60a5fa;
+margin-bottom:14px;
+}
+
+.feature-box h5{
+font-size:16px;
+font-weight:600;
+margin-bottom:8px;
+}
+
+.feature-box p{
+font-size:13px;
+color:#d1d5db;
+line-height:1.6;
+}
+
+/* Buttons */
+
+.hero-buttons{
+display:flex;
+justify-content:center;
+gap:18px;
+flex-wrap:wrap;
+}
+
+.btn-custom{
+background:linear-gradient(135deg,#2563eb,#1d4ed8);
+
+color:white;
+
+padding:13px 32px;
+
+font-size:16px;
+font-weight:600;
+
+border:none;
+border-radius:14px;
+
+text-decoration:none;
+
+transition:0.3s;
+
+box-shadow:0 10px 22px rgba(37,99,235,0.22);
+}
+
+.btn-custom:hover{
+transform:translateY(-3px);
+box-shadow:0 12px 28px rgba(59,130,246,0.40);
+color:white;
+}
+
+.btn-secondary-custom{
+background:rgba(255,255,255,0.08);
+
+border:1px solid rgba(255,255,255,0.14);
+
+color:white;
+
+padding:13px 30px;
+
+font-size:16px;
+font-weight:500;
+
+border-radius:14px;
+
+text-decoration:none;
+
+transition:0.3s;
+}
+
+.btn-secondary-custom:hover{
+background:white;
+color:#111827;
+}
+
+/* Footer Text */
+
+.footer-text{
+margin-top:30px;
+font-size:13px;
+color:#93c5fd;
+}
+
+/* Animation */
+
+@keyframes fadeIn{
+from{
+opacity:0;
+transform:translateY(30px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+/* Responsive */
+
+@media(max-width:992px){
+
+.features{
+grid-template-columns:1fr;
+}
+
+.hero-content{
+padding:40px 25px;
+}
+
+.title{
+font-size:42px;
+}
+
+.tagline{
+font-size:18px;
+}
+
+.subtitle{
+font-size:14px;
+}
+
+}
+
+@media(max-width:768px){
+
+.navbar{
+padding:15px 20px;
+}
+
+.title{
+font-size:34px;
+}
+
+.hero-buttons{
+flex-direction:column;
+}
+
+.btn-custom,
+.btn-secondary-custom{
+width:100%;
+}
+
+.navbar-brand{
+font-size:18px;
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="home-bg">
+
+<!-- Navbar -->
+
+<!-- Navbar -->
+
+<nav class="navbar navbar-expand-lg navbar-dark px-4 py-3">
+
+<a class="navbar-brand" href="/">
+
+<img src="{{ url_for('static', filename='Logo.jpg') }}" class="logo">
+
+AI Resume Tracking System
+
+</a>
+
+<div class="ms-auto d-flex gap-2">
+<a href="/" class="btn btn-light nav-btn">
+Home
+</a>
+
+<a href="/login" class="btn btn-outline-light nav-btn">
+Login
+</a>
+
+<a href="/register" class="btn btn-outline-light nav-btn">
+Register
+</a>
+</div>
+
+</nav>
+
+</nav>
+
+<!-- Hero Section -->
+
+<section class="hero-section">
+
+<div class="hero-content">
+
+<div class="ai-badge">
+🚀 AI Powered Resume Intelligence
+</div>
+
+<h1 class="title">
+Transform Your <span>Career Journey</span> With AI
+</h1>
+
+<p class="tagline">
+Smart Resume Analysis • ATS Optimization • AI Career Guidance
+</p>
+
+<p class="subtitle">
+
+Our AI Resume Tracking System helps job seekers analyze resumes, compare them with job descriptions, identify missing skills, improve ATS compatibility, and receive personalized AI recommendations to increase hiring success.
+
+</p>
+
+<!-- Features -->
+
+<div class="features">
+
+<div class="feature-box">
+
+<i class="fa-solid fa-brain"></i>
+
+<h5>AI Resume Analysis</h5>
+
+<p>
+Automatically analyze resume content, experience, skills, and keywords using advanced AI technology.
+</p>
+
+</div>
+
+<div class="feature-box">
+
+<i class="fa-solid fa-chart-line"></i>
+
+<h5>ATS Match Score</h5>
+
+<p>
+Get accurate ATS compatibility scores and understand how recruiters evaluate your resume.
+</p>
+
+</div>
+
+<div class="feature-box">
+
+<i class="fa-solid fa-lightbulb"></i>
+
+<h5>Smart Recommendations</h5>
+
+<p>
+Receive intelligent career suggestions and personalized improvement tips instantly.
+</p>
+
+</div>
+
+</div>
+
+<!-- Buttons -->
+
+<div class="hero-buttons">
+
+<a href="/register" class="btn-custom">
+
+<i class="fa-solid fa-user-plus me-2"></i>
+Create Account
+
+</a>
+
+<a href="/login" class="btn-secondary-custom">
+
+<i class="fa-solid fa-right-to-bracket me-2"></i>
+Login
+
+</a>
+
+</div>
+
+<div class="footer-text">
+✨ Build smarter resumes and unlock better career opportunities with AI
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+</body>
+
+</html>

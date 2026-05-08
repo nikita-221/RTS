@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>AI Recommendations</title>
+
+<!-- Bootstrap -->
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+<!-- Font Awesome -->
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+min-height:100vh;
+font-family:'Poppins',sans-serif;
+
+background:
+linear-gradient(rgba(5,10,25,0.78), rgba(5,10,25,0.78)),
+url("{{ url_for('static', filename='Dashboard.jpg') }}");
+
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+
+color:white;
+overflow-x:hidden;
+}
+
+/* Navbar */
+
+.navbar{
+background:rgba(0,0,0,0.35);
+backdrop-filter:blur(12px);
+border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.logo{
+height:45px;
+width:45px;
+border-radius:50%;
+object-fit:cover;
+margin-right:12px;
+}
+
+.navbar-brand{
+display:flex;
+align-items:center;
+
+font-size:25px;
+font-weight:700;
+
+color:white !important;
+letter-spacing:0.5px;
+}
+
+.nav-btn{
+padding:9px 22px;
+border-radius:12px;
+font-weight:500;
+margin-left:10px;
+transition:0.3s;
+}
+
+.btn-outline-light:hover{
+background:white;
+color:#111827;
+}
+
+.btn-light{
+background:white;
+color:#111827;
+}
+
+.btn-light:hover{
+background:#dbeafe;
+}
+
+/* Main Container */
+
+.main-container{
+padding:55px 20px;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+/* Recommendations Card */
+
+.recommendations-card{
+
+width:100%;
+max-width:1050px;
+
+padding:45px;
+
+border-radius:30px;
+
+background:rgba(255,255,255,0.08);
+
+backdrop-filter:blur(20px);
+
+border:1px solid rgba(255,255,255,0.12);
+
+box-shadow:
+0 12px 40px rgba(0,0,0,0.5),
+0 0 30px rgba(59,130,246,0.18);
+
+animation:fadeIn 1s ease;
+}
+
+/* Header */
+
+.recommendations-header{
+text-align:center;
+margin-bottom:40px;
+}
+
+.ai-badge{
+display:inline-block;
+
+padding:10px 22px;
+
+border-radius:30px;
+
+background:rgba(96,165,250,0.14);
+
+border:1px solid rgba(96,165,250,0.35);
+
+color:#93c5fd;
+
+font-size:14px;
+font-weight:600;
+
+margin-bottom:24px;
+}
+
+.recommendations-header h1{
+font-size:46px;
+font-weight:800;
+margin-bottom:14px;
+}
+
+.recommendations-header p{
+font-size:16px;
+color:#d1d5db;
+max-width:760px;
+margin:auto;
+line-height:1.9;
+}
+
+/* Accordion */
+
+.accordion-item{
+background:rgba(255,255,255,0.05) !important;
+border:1px solid rgba(255,255,255,0.08) !important;
+margin-bottom:12px;
+border-radius:14px !important;
+overflow:hidden;
+}
+
+.accordion-button{
+background:transparent !important;
+color:white !important;
+font-weight:600;
+box-shadow:none !important;
+}
+
+.accordion-body{
+color:#d1d5db;
+line-height:1.8;
+}
+
+/* Buttons */
+
+.action-buttons{
+display:flex;
+gap:20px;
+margin-top:45px;
+flex-wrap:wrap;
+}
+
+.btn-custom{
+flex:1;
+
+padding:15px;
+
+border:none;
+border-radius:14px;
+
+font-size:16px;
+font-weight:600;
+
+background:linear-gradient(135deg,#2563eb,#1d4ed8);
+
+color:white;
+
+text-align:center;
+text-decoration:none;
+
+transition:0.3s;
+}
+
+.btn-custom:hover{
+transform:translateY(-2px);
+box-shadow:0 12px 25px rgba(59,130,246,0.35);
+color:white;
+}
+
+.btn-secondary-custom{
+flex:1;
+
+padding:15px;
+
+border-radius:14px;
+
+background:rgba(255,255,255,0.08);
+
+border:1px solid rgba(255,255,255,0.15);
+
+color:white;
+
+text-align:center;
+text-decoration:none;
+
+font-weight:600;
+
+transition:0.3s;
+}
+
+.btn-secondary-custom:hover{
+background:white;
+color:#111827;
+}
+
+/* Animation */
+
+@keyframes fadeIn{
+from{
+opacity:0;
+transform:translateY(30px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+/* Responsive */
+
+@media(max-width:768px){
+
+.navbar{
+padding:14px 18px;
+}
+
+.recommendations-card{
+padding:28px;
+}
+
+.recommendations-header h1{
+font-size:32px;
+}
+
+.action-buttons{
+flex-direction:column;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- Navbar -->
+
+<nav class="navbar navbar-expand-lg navbar-dark px-4 py-3">
+
+<a class="navbar-brand" href="/">
+<img src="{{ url_for('static', filename='Logo.jpg') }}" class="logo">
+AI Resume Tracking System
+</a>
+
+<div class="ms-auto d-flex gap-2">
+<a href="/" class="btn btn-outline-light nav-btn">
+Home
+</a>
+
+<a href="/upload" class="btn btn-outline-light nav-btn">
+Analyze
+</a>
+
+<a href="/history" class="btn btn-outline-light nav-btn">
+History
+</a>
+
+<a href="/logout" class="btn btn-light nav-btn">
+Logout
+</a>
+</div>
+
+</nav>
+
+</nav>
+
+<!-- Main Section -->
+
+<div class="main-container">
+
+<div class="recommendations-card">
+
+<!-- Header -->
+
+<div class="recommendations-header">
+
+<div class="ai-badge">
+🤖 AI Powered Resume Intelligence
+</div>
+
+<h1>
+AI Recommendations
+</h1>
+
+<p>
+Our advanced AI has analyzed your resume and provided personalized recommendations to improve your job application success. Follow these tips to optimize your resume and increase your chances of landing interviews.
+</p>
+
+</div>
+
+<!-- Recommendations -->
+
+<div class="accordion" id="tipsAccordion">
+
+{% for tip in ai_tips %}
+
+<div class="accordion-item">
+
+<h2 class="accordion-header">
+
+<button class="accordion-button collapsed"
+type="button"
+data-bs-toggle="collapse"
+data-bs-target="#tip{{ loop.index }}">
+
+AI Suggestion {{ loop.index }}
+
+</button>
+
+</h2>
+
+<div id="tip{{ loop.index }}"
+class="accordion-collapse collapse"
+data-bs-parent="#tipsAccordion">
+
+<div class="accordion-body">
+{{ tip }}
+</div>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+<!-- Buttons -->
+
+<div class="action-buttons">
+
+<a href="/upload" class="btn-custom">
+
+<i class="fa-solid fa-rotate"></i>
+Analyze Another Resume
+
+</a>
+
+<a href="/history" class="btn-secondary-custom">
+
+<i class="fa-solid fa-clock-rotate-left"></i>
+View Upload History
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- Bootstrap -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
