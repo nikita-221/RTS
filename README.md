@@ -138,32 +138,6 @@ Professional API reference including:
 
 ---
 
-### ⚙️ Configuration Guide
-
-Complete project setup instructions:
-
-* Environment configuration
-* Flask setup
-* Database configuration
-* Dependency installation
-* Secret key management
-* Production settings
-
----
-
-### 🛠️ Troubleshooting & Solutions
-
-10+ common issue resolutions including:
-
-* Database connection problems
-* Upload failures
-* Flask server errors
-* Authentication issues
-* Deployment troubleshooting
-* Mobile responsiveness fixes
-
----
-
 ### 🧩 Real Code Examples
 
 Practical code snippets for:
@@ -174,19 +148,6 @@ Practical code snippets for:
 * Flask routing
 * Session management
 * ATS logic
-
----
-
-### ☁️ Deployment Guide
-
-Complete deployment instructions for:
-
-* Local development setup
-* GitHub integration
-* Render deployment
-* Railway deployment
-* Production hosting
-* Environment variables
 
 ---
 
@@ -242,19 +203,6 @@ Organized future enhancements:
 * Android application
 * Progressive Web App (PWA)
 * Push notifications
-
----
-
-# 🎯 Perfect For
-
-✅ GitHub portfolio showcase
-✅ Professional project documentation
-✅ Developer onboarding
-✅ Technical reference guide
-✅ Academic project submission
-✅ Deployment & maintenance instructions
-✅ Resume/project presentations
-✅ Stakeholder demonstrations
 
 ---
 
