@@ -2,6 +2,9 @@
 AI Resume Tracking System (AI RTS) is a smart web-based application that helps users upload and analyze resumes using Artificial Intelligence and ATS (Applicant Tracking System) techniques.
 
 It evaluates resumes based on keywords, skills, formatting, and job relevance to generate an ATS score and improve hiring efficiency.
+
+---
+
 ### 📌 Detailed Project Overview
 
 Comprehensive explanation of:
