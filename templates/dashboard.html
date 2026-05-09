@@ -302,10 +302,19 @@ AI Resume Tracking System
 </a>
 
 <div class="ms-auto d-flex gap-2">
-<a href="/" class="btn btn-outline-light nav-btn">
-Home
+{% if user %}
+<a href="/upload" class="btn btn-outline-light nav-btn">
+Upload
 </a>
 
+<a href="/history" class="btn btn-outline-light nav-btn">
+History
+</a>
+
+<a href="/logout" class="btn btn-outline-light nav-btn">
+Logout
+</a>
+{% else %}
 <a href="/login" class="btn btn-outline-light nav-btn">
 Login
 </a>
@@ -313,6 +322,7 @@ Login
 <a href="/register" class="btn btn-outline-light nav-btn">
 Register
 </a>
+{% endif %}
 </div>
 
 </nav>
@@ -322,6 +332,15 @@ Register
 <!-- Dashboard Section -->
 <section class="dashboard-wrapper">
 <div class="dashboard-box">
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ 'danger' if category == 'danger' else 'success' if category == 'success' else 'info' }} text-dark rounded-3 mb-4">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 <div class="ai-badge">
 🚀 AI Powered Resume Intelligence
 </div>
@@ -389,6 +408,16 @@ Discover missing keywords, strengths, weaknesses, and optimization opportunities
 </div>
 
 <!-- Buttons -->
+
+{% if admin_request_status == 'pending' %}
+<div class="alert alert-info text-dark rounded-4 py-3">
+Your request for admin access is pending approval by the main admin. You may continue using the system as a regular user.
+</div>
+{% elif user and user['role'] == 'admin' %}
+<div class="alert alert-success text-dark rounded-4 py-3">
+You are an approved admin. Visit the admin panel to manage users and resume data.
+</div>
+{% endif %}
 
 <div class="dashboard-buttons">
 

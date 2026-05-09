@@ -256,6 +256,45 @@ margin-top:10px;
 box-shadow:0 10px 25px rgba(37,99,235,0.30);
 }
 
+.login-type-selector .radio-group{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+}
+
+.login-type-selector .radio-card{
+display:flex;
+align-items:flex-start;
+gap:12px;
+padding:16px;
+border:1px solid rgba(255,255,255,0.16);
+border-radius:16px;
+background:rgba(255,255,255,0.08);
+transition:all 0.25s ease;
+cursor:pointer;
+}
+
+.login-type-selector .radio-card.active,
+.login-type-selector .radio-card:hover{
+background:rgba(37,99,235,0.16);
+border-color:rgba(96,165,250,0.45);
+}
+
+.login-type-selector .radio-card input{
+margin-top:4px;
+}
+
+.login-type-selector .radio-card strong{
+display:block;
+margin-bottom:4px;
+font-weight:700;
+}
+
+.login-type-selector .radio-card small{
+color:#d1d5db;
+line-height:1.4;
+}
+
 .btn-custom:hover{
 transform:translateY(-3px);
 box-shadow:0 12px 28px rgba(59,130,246,0.45);
@@ -476,6 +515,16 @@ Continue your AI hiring journey securely
 
 <form method="POST">
 
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ 'danger' if category == 'danger' else 'success' if category == 'success' else 'info' }} text-dark rounded-3 mb-4">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
 <div class="input-box">
 
 <i class="fa-solid fa-envelope"></i>
@@ -484,6 +533,7 @@ Continue your AI hiring journey securely
 name="email"
 class="form-control"
 placeholder="Email Address"
+value="{{ email|default('') }}"
 required>
 
 </div>
@@ -501,15 +551,23 @@ required>
 </div>
 <div class="input-box login-type-selector">
 
-<label style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-<input type="radio" name="login_type" value="user" checked style="width: 18px; height: 18px; cursor: pointer;">
-<span style="cursor: pointer; font-weight: 500;">Login as User</span>
+<div class="radio-group">
+<label class="radio-card {% if login_type != 'admin' %}active{% endif %}">
+<input type="radio" name="login_type" value="user" {% if login_type != 'admin' %}checked{% endif %}>
+<div>
+<strong>Login as User</strong>
+<small>Access your resume dashboard</small>
+</div>
 </label>
 
-<label style="display: flex; align-items: center; gap: 10px;">
-<input type="radio" name="login_type" value="admin" style="width: 18px; height: 18px; cursor: pointer;">
-<span style="cursor: pointer; font-weight: 500;">Login as Admin</span>
+<label class="radio-card {% if login_type == 'admin' %}active{% endif %}">
+<input type="radio" name="login_type" value="admin" {% if login_type == 'admin' %}checked{% endif %}>
+<div>
+<strong>Login as Admin</strong>
+<small>Access the admin control panel</small>
+</div>
 </label>
+</div>
 
 </div>
 

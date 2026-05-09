@@ -462,6 +462,16 @@ Upload your resume and let AI evaluate your skills, strengths, and job compatibi
 
 <form action="/upload" method="POST" enctype="multipart/form-data">
 
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ 'danger' if category == 'danger' else 'success' if category == 'success' else 'info' }} text-dark rounded-3 mb-4">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
 <div class="mb-4">
 
 <label class="form-label">

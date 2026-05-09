@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, flash
 import sqlite3
 import os
 import re
@@ -17,6 +17,10 @@ UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 ALLOWED_EXTENSIONS = {"pdf", "docx", "png", "jpg", "jpeg"}
+
+PERMANENT_ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "nikitabharmota@gmail.com")
+PERMANENT_ADMIN_NAME = os.getenv("ADMIN_NAME", "Admin")
+PERMANENT_ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "nikita890")
 
 STOPWORDS = {
     "the", "and", "for", "with", "that", "this", "from", "are", "was",
@@ -72,6 +76,33 @@ def create_tables():
     conn.commit()
     conn.close()
 
+
+def ensure_default_admin():
+    conn = get_db()
+    cur = conn.cursor()
+    
+    # Only create default admin if NO admins exist at all
+    existing_admin = cur.execute(
+        "SELECT id FROM users WHERE role = 'admin'"
+    ).fetchone()
+    
+    if not existing_admin:
+        admin_email = os.getenv("ADMIN_EMAIL", "admin@example.com")
+        admin_password = os.getenv("ADMIN_PASSWORD", "admin123")
+        admin_name = os.getenv("ADMIN_NAME", "Admin")
+        
+        cur.execute(
+            "INSERT INTO users(name,email,password,role) VALUES(?,?,?,?)",
+            (
+                admin_name,
+                admin_email,
+                generate_password_hash(admin_password),
+                "admin"
+            )
+        )
+        conn.commit()
+    conn.close()
+
 def migrate_database():
     conn = get_db()
     cur = conn.cursor()
@@ -89,7 +120,6 @@ def migrate_database():
             pass
     conn.commit()
     conn.close()
-
 
 create_tables()
 migrate_database()  # Automatically keep the resume table schema updated for new fields
@@ -217,12 +247,15 @@ def register():
         email = request.form.get("email", "").strip()
         password = request.form.get("password", "")
         confirm_password = request.form.get("confirm_password", "")
+        account_type = request.form.get("account_type", "user")
 
         if not name or not email or not password:
-            return "All fields are required."
+            flash("All fields are required.", "danger")
+            return render_template("register.html", selected_account=account_type, name=name, email=email)
 
         if password != confirm_password:
-            return "Passwords do not match."
+            flash("Passwords do not match.", "danger")
+            return render_template("register.html", selected_account=account_type, name=name, email=email)
 
         hashed_password = generate_password_hash(password)
 
@@ -230,17 +263,50 @@ def register():
         cur = conn.cursor()
 
         try:
+            role = "user"
+            
+            # Check if registering as admin
+            if account_type == "admin":
+                # Check if any admin exists
+                conn_check = get_db()
+                cur_check = conn_check.cursor()
+                existing_admin = cur_check.execute(
+                    "SELECT id FROM users WHERE role = 'admin'"
+                ).fetchone()
+                conn_check.close()
+                
+                # If no admin exists, auto-approve this one as admin
+                if not existing_admin:
+                    role = "admin"
+            
             cur.execute(
                 "INSERT INTO users(name,email,password,role) VALUES(?,?,?,?)",
-                (name, email, hashed_password, "user")
+                (name, email, hashed_password, role)
             )
+            user_id = cur.lastrowid
+
+            # If still requesting admin (and not auto-approved as first admin)
+            if account_type == "admin" and role == "user":
+                cur.execute(
+                    "INSERT INTO admin_requests(user_id, requested_at) VALUES(?, ?)",
+                    (user_id, datetime.now().isoformat())
+                )
+
             conn.commit()
 
         except sqlite3.IntegrityError:
             conn.close()
-            return "Email already registered!"
+            flash("Email already registered!", "danger")
+            return render_template("register.html", selected_account=account_type, name=name, email=email)
 
         conn.close()
+
+        if account_type == "admin" and role == "admin":
+            flash("Admin account created! You can now login as admin.", "success")
+        elif account_type == "admin":
+            flash("Admin request sent to the main admin. Please wait for approval.", "success")
+        else:
+            flash("Account created successfully. Please log in.", "success")
 
         return redirect("/login")
 
@@ -276,11 +342,13 @@ def login():
                 if user["role"] == "admin":
                     return redirect("/admin")
                 else:
-                    return "Access denied: You are not an admin."
+                    flash("Access denied: You are not an admin.", "danger")
+                    return render_template("login.html", email=email, login_type=login_type)
             else:
                 return redirect("/dashboard")
 
-        return "Invalid Email or Password"
+        flash("Invalid email or password.", "danger")
+        return render_template("login.html", email=email, login_type=login_type)
 
     return render_template("login.html")
 
@@ -324,6 +392,7 @@ def dashboard():
         admin_request_status=admin_request_status
     )
 
+# HISTORY
 @app.route("/history")
 def history():
 
@@ -387,6 +456,54 @@ def delete_resume(resume_id):
 
     return redirect("/history")
 
+# DELETE USER
+@app.route("/delete_user/<int:user_id>")
+def delete_user(user_id):
+
+    if "role" not in session or session["role"] != "admin":
+        return "Unauthorized access", 403
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    target_user = cur.execute(
+        "SELECT email FROM users WHERE id = ?",
+        (user_id,)
+    ).fetchone()
+
+    if not target_user:
+        conn.close()
+        return "User not found", 404
+
+    if target_user["email"] == PERMANENT_ADMIN_EMAIL:
+        conn.close()
+        return "Cannot delete the permanent admin.", 403
+
+    if session.get("user_id") == user_id:
+        conn.close()
+        return "Cannot delete your own admin account.", 400
+
+    resumes = cur.execute(
+        "SELECT filename FROM resumes WHERE user_id = ?",
+        (user_id,)
+    ).fetchall()
+
+    for resume in resumes:
+        resume_path = os.path.join(UPLOAD_FOLDER, resume["filename"])
+        if os.path.exists(resume_path):
+            try:
+                os.remove(resume_path)
+            except OSError:
+                pass
+
+    cur.execute("DELETE FROM resumes WHERE user_id = ?", (user_id,))
+    cur.execute("DELETE FROM admin_requests WHERE user_id = ?", (user_id,))
+    cur.execute("DELETE FROM users WHERE id = ?", (user_id,))
+    conn.commit()
+    conn.close()
+
+    return redirect("/admin")
+
 # UPLOAD RESUME
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
@@ -400,10 +517,12 @@ def upload():
         jd = request.form.get("jd", "").strip()
 
         if not file or file.filename == "" or not allowed_file(file.filename):
-            return "Please upload a valid resume file (PDF, DOCX, PNG, JPG)."
+            flash("Please upload a valid resume file (PDF, DOCX, PNG, JPG).", "danger")
+            return render_template("upload.html")
 
         if not jd:
-            return "Job description is required."
+            flash("Job description is required.", "danger")
+            return render_template("upload.html")
 
         filename = secure_filename(file.filename)
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -456,6 +575,7 @@ def upload():
 
     return render_template("upload.html")
 
+# REQUEST ADMIN ACCESS
 @app.route("/request_admin", methods=["POST"])
 def request_admin():
 
@@ -463,6 +583,7 @@ def request_admin():
         return redirect("/login")
 
     if session.get("role") == "admin":
+        flash("You already have admin access.", "info")
         return redirect("/dashboard")
 
     conn = get_db()
@@ -479,6 +600,9 @@ def request_admin():
             (session["user_id"], datetime.now().isoformat())
         )
         conn.commit()
+        flash("Admin access request sent. Please wait for approval.", "success")
+    else:
+        flash("Your admin access request is already pending.", "info")
 
     conn.close()
     return redirect("/dashboard")
@@ -525,7 +649,7 @@ def admin():
 
     conn.close()
 
-    return render_template("admin.html", resumes=resumes, pending_requests=pending_requests, sort_by=sort_by)
+    return render_template("admin.html", resumes=resumes, pending_requests=pending_requests, sort_by=sort_by, current_user_id=session.get("user_id"))
 
 # LOGOUT
 @app.route("/logout")
@@ -535,12 +659,16 @@ def logout():
 
     return redirect("/")
 
-
+#APPROVE ADMIN REQUEST
 @app.route("/approve_admin_request/<int:request_id>")
 def approve_admin_request(request_id):
 
     if "role" not in session or session["role"] != "admin":
         return redirect("/login")
+
+    if session.get("user_email") != PERMANENT_ADMIN_EMAIL:
+        flash("Only the permanent admin can approve admin access.", "danger")
+        return redirect("/admin")
 
     conn = get_db()
     cur = conn.cursor()
@@ -564,12 +692,16 @@ def approve_admin_request(request_id):
     conn.close()
     return redirect("/admin")
 
-
+# REJECT ADMIN REQUEST
 @app.route("/reject_admin_request/<int:request_id>")
 def reject_admin_request(request_id):
 
     if "role" not in session or session["role"] != "admin":
         return redirect("/login")
+
+    if session.get("user_email") != PERMANENT_ADMIN_EMAIL:
+        flash("Only the permanent admin can reject admin access.", "danger")
+        return redirect("/admin")
 
     conn = get_db()
     cur = conn.cursor()
@@ -582,7 +714,6 @@ def reject_admin_request(request_id):
     conn.close()
 
     return redirect("/admin")
-
 
 #RECESULT DETAILS
 @app.route("/recommendations/<int:resume_id>")
@@ -653,11 +784,28 @@ def update_role(user_id, new_role):
     if "role" not in session or session["role"] != "admin":
         return redirect("/login")
 
+    if session.get("user_email") != PERMANENT_ADMIN_EMAIL:
+        flash("Only the permanent admin can change user roles.", "danger")
+        return redirect("/admin")
+
     if new_role not in ["user", "admin"]:
         return "Invalid role"
 
     conn = get_db()
     cur = conn.cursor()
+
+    target_user = cur.execute(
+        "SELECT email FROM users WHERE id = ?",
+        (user_id,)
+    ).fetchone()
+
+    if not target_user:
+        conn.close()
+        return "User not found", 404
+
+    if target_user["email"] == PERMANENT_ADMIN_EMAIL and new_role != "admin":
+        conn.close()
+        return "Cannot remove the permanent admin.", 403
 
     cur.execute("UPDATE users SET role = ? WHERE id = ?", (new_role, user_id))
     conn.commit()
@@ -665,8 +813,7 @@ def update_role(user_id, new_role):
 
     return redirect("/admin")
 
-
 # ---------------- RUN ----------------
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

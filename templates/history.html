@@ -435,7 +435,34 @@ and AI recommendations
 in one intelligent dashboard.
 </p>
 
+{% if is_admin %}
+<div class="d-flex justify-content-between align-items-center mt-4 flex-wrap gap-3">
+<div class="text-white">
+<strong>Sort by:</strong>
 </div>
+<div>
+<a href="/history?sort=uploaded_at_desc" class="btn btn-sm btn-outline-light">Most Recent</a>
+<a href="/history?sort=uploaded_at_asc" class="btn btn-sm btn-outline-light">Oldest</a>
+<a href="/history?sort=score_desc" class="btn btn-sm btn-outline-light">Highest Accuracy</a>
+<a href="/history?sort=score_asc" class="btn btn-sm btn-outline-light">Lowest Accuracy</a>
+</div>
+</div>
+{% else %}
+<div class="alert alert-info mt-4" style="background:rgba(59,130,246,0.2); border:1px solid rgba(59,130,246,0.4); color:#bfdbfe; border-radius:12px;">
+<i class="fas fa-lock me-2"></i><strong>Admin-only feature:</strong> Only admins can sort resume data. Contact your admin for sorting assistance.
+</div>
+{% endif %}
+
+</div>
+{% if is_admin %}
+<div class="alert alert-success mt-4" style="background:rgba(34,197,94,0.2); border:1px solid rgba(34,197,94,0.4); color:#86efac; border-radius:12px;">
+<i class="fas fa-shield-alt me-2"></i><strong>Admin mode:</strong> You have full access to delete and manage all user resume data.
+</div>
+{% else %}
+<div class="alert alert-warning mt-4" style="background:rgba(245,158,11,0.2); border:1px solid rgba(245,158,11,0.4); color:#fde047; border-radius:12px;">
+<i class="fas fa-info-circle me-2"></i><strong>User mode:</strong> You can view your resume history but cannot delete or sort entries. Contact an admin for assistance.
+</div>
+{% endif %}
 
 {% if history %}
 
@@ -453,7 +480,9 @@ in one intelligent dashboard.
 <th>🎯 Status</th>
 <th>🔑 Keywords</th>
 <th>💡 AI Summary</th>
+{% if is_admin %}
 <th>⚙️ Actions</th>
+{% endif %}
 
 </tr>
 
@@ -538,14 +567,13 @@ in one intelligent dashboard.
 {{ item['summary'] or 'No AI summary available.' }}
 
 </td>
-
+{% if is_admin %}
 <td>
-
 <a href="/delete_resume/{{ item['id'] }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this resume?')">
 <i class="fa-solid fa-trash"></i> Delete
 </a>
-
 </td>
+{% endif %}
 
 </tr>
 

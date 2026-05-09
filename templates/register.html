@@ -241,6 +241,45 @@ border:2px solid #3b82f6;
 transform:scale(1.01);
 }
 
+.login-type-selector .radio-group{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+}
+
+.login-type-selector .radio-card{
+display:flex;
+align-items:flex-start;
+gap:12px;
+padding:16px;
+border:1px solid rgba(255,255,255,0.16);
+border-radius:16px;
+background:rgba(255,255,255,0.08);
+transition:all 0.25s ease;
+cursor:pointer;
+}
+
+.login-type-selector .radio-card.active,
+.login-type-selector .radio-card:hover{
+background:rgba(37,99,235,0.16);
+border-color:rgba(96,165,250,0.45);
+}
+
+.login-type-selector .radio-card input{
+margin-top:4px;
+}
+
+.login-type-selector .radio-card strong{
+display:block;
+margin-bottom:4px;
+font-weight:700;
+}
+
+.login-type-selector .radio-card small{
+color:#d1d5db;
+line-height:1.4;
+}
+
 /* Button */
 .btn-custom{
 width:100%;
@@ -475,6 +514,16 @@ Join the future of AI recruitment today
 
 <form method="POST">
 
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ 'danger' if category == 'danger' else 'success' if category == 'success' else 'info' }} text-dark rounded-3 mb-4">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
 <div class="input-box">
 
 <i class="fa-solid fa-user"></i>
@@ -483,6 +532,7 @@ Join the future of AI recruitment today
 name="name"
 class="form-control"
 placeholder="Full Name"
+value="{{ name|default('') }}"
 required>
 
 </div>
@@ -495,6 +545,7 @@ required>
 name="email"
 class="form-control"
 placeholder="Email Address"
+value="{{ email|default('') }}"
 required>
 
 </div>
@@ -520,6 +571,28 @@ name="confirm_password"
 class="form-control"
 placeholder="Confirm Password"
 required>
+
+</div>
+
+<div class="input-box login-type-selector">
+
+<div class="radio-group">
+<label class="radio-card {% if selected_account != 'admin' %}active{% endif %}">
+<input type="radio" name="account_type" value="user" {% if selected_account != 'admin' %}checked{% endif %}>
+<div>
+<strong>Create as User</strong>
+<small>Standard resume tracking access</small>
+</div>
+</label>
+
+<label class="radio-card {% if selected_account == 'admin' %}active{% endif %}">
+<input type="radio" name="account_type" value="admin" {% if selected_account == 'admin' %}checked{% endif %}>
+<div>
+<strong>Create as Admin</strong>
+<small>Request admin approval from the main admin</small>
+</div>
+</label>
+</div>
 
 </div>
 
