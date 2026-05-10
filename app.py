@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session, flash
+from flask import Flask, render_template, request, redirect, session, flash, send_from_directory
 import sqlite3
 import os
 import re
@@ -87,16 +87,12 @@ def ensure_default_admin():
     ).fetchone()
     
     if not existing_admin:
-        admin_email = os.getenv("ADMIN_EMAIL", "admin@example.com")
-        admin_password = os.getenv("ADMIN_PASSWORD", "admin123")
-        admin_name = os.getenv("ADMIN_NAME", "Admin")
-        
         cur.execute(
             "INSERT INTO users(name,email,password,role) VALUES(?,?,?,?)",
             (
-                admin_name,
-                admin_email,
-                generate_password_hash(admin_password),
+                PERMANENT_ADMIN_NAME,
+                PERMANENT_ADMIN_EMAIL,
+                generate_password_hash(PERMANENT_ADMIN_PASSWORD),
                 "admin"
             )
         )
@@ -424,6 +420,35 @@ def history():
     is_admin = session.get("role") == "admin"
     return render_template("history.html", history=history, is_admin=is_admin, sort_by=sort_by)
 
+# VIEW RESUME
+@app.route("/resume/<int:resume_id>")
+def view_resume(resume_id):
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    resume = cur.execute(
+        "SELECT filename, user_id FROM resumes WHERE id = ?",
+        (resume_id,)
+    ).fetchone()
+
+    conn.close()
+
+    if not resume:
+        return "Resume not found", 404
+
+    if session.get("role") != "admin" and resume["user_id"] != session["user_id"]:
+        return "Access denied", 403
+
+    resume_path = os.path.join(UPLOAD_FOLDER, resume["filename"])
+    if not os.path.exists(resume_path):
+        return "Resume file missing", 404
+
+    return send_from_directory(os.path.abspath(UPLOAD_FOLDER), resume["filename"])
+
 # DELETE RESUME
 @app.route("/delete_resume/<int:resume_id>")
 def delete_resume(resume_id):
@@ -627,12 +652,11 @@ def admin():
     conn = get_db()
     cur = conn.cursor()
 
-    resumes = cur.execute(f"""
+    users = cur.execute(f"""
     SELECT users.id, users.name, users.email, users.role,
            COUNT(resumes.id) as upload_count,
            MAX(resumes.score) as max_score,
-           AVG(resumes.score) as avg_score,
-           GROUP_CONCAT(resumes.filename || ' (' || resumes.score || '%)', '; ') as resume_details
+           AVG(resumes.score) as avg_score
     FROM users
     LEFT JOIN resumes ON users.id = resumes.user_id
     GROUP BY users.id, users.name, users.email, users.role
@@ -649,7 +673,36 @@ def admin():
 
     conn.close()
 
-    return render_template("admin.html", resumes=resumes, pending_requests=pending_requests, sort_by=sort_by, current_user_id=session.get("user_id"))
+    return render_template("admin.html", users=users, pending_requests=pending_requests, sort_by=sort_by, current_user_id=session.get("user_id"))
+
+# ADMIN VIEW USER DETAILS
+@app.route("/admin/user/<int:user_id>")
+def admin_view_user(user_id):
+
+    if "role" not in session or session["role"] != "admin":
+        return redirect("/login")
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    user = cur.execute(
+        "SELECT id, name, email, role FROM users WHERE id = ?",
+        (user_id,)
+    ).fetchone()
+
+    if not user:
+        conn.close()
+        return "User not found", 404
+
+    resumes = cur.execute(
+        "SELECT id, filename, score, missing_skills, summary, top_keywords, uploaded_at "
+        "FROM resumes WHERE user_id = ? ORDER BY uploaded_at DESC",
+        (user_id,)
+    ).fetchall()
+
+    conn.close()
+
+    return render_template("admin_user.html", user=user, resumes=resumes)
 
 # LOGOUT
 @app.route("/logout")

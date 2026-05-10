@@ -181,7 +181,7 @@ margin-right:15px;
 
 /* Register Box */
 .form-box{
-width:460px;
+width:500px;
 padding:45px 38px;
 border-radius:28px;
 background:rgba(255,255,255,0.10);
@@ -581,7 +581,6 @@ required>
 <input type="radio" name="account_type" value="user" {% if selected_account != 'admin' %}checked{% endif %}>
 <div>
 <strong>Create as User</strong>
-<small>Standard resume tracking access</small>
 </div>
 </label>
 
@@ -589,7 +588,6 @@ required>
 <input type="radio" name="account_type" value="admin" {% if selected_account == 'admin' %}checked{% endif %}>
 <div>
 <strong>Create as Admin</strong>
-<small>Request admin approval from the main admin</small>
 </div>
 </label>
 </div>

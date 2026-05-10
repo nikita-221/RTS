@@ -91,6 +91,7 @@ box-shadow:0 8px 32px rgba(0,0,0,0.1);
 /* Heading Styles */
 .admin-heading{
 margin-bottom:40px;
+text-align:center;
 }
 
 .admin-heading h1{
@@ -103,15 +104,6 @@ margin-bottom:10px;
 .admin-heading p{
 font-size:16px;
 color:rgba(255,255,255,0.6);
-}
-
-/* Sort & Controls */
-.sort-controls{
-display:flex;
-gap:20px;
-align-items:center;
-flex-wrap:wrap;
-margin-bottom:30px;
 }
 
 .form-select{
@@ -141,7 +133,7 @@ color:white;
 }
 
 .table thead th{
-color:#cbd5e1;
+color:#143b91;
 font-weight:600;
 border-bottom:2px solid rgba(255,255,255,0.1);
 padding:15px;
@@ -150,6 +142,11 @@ padding:15px;
 .table tbody td{
 padding:15px;
 border-bottom:1px solid rgba(255,255,255,0.05);
+color:#000000;
+}
+
+.table tbody td a {
+color:#000000 !important;
 }
 
 .table tbody tr:hover{
@@ -191,7 +188,7 @@ box-shadow:0 4px 12px rgba(239,68,68,0.3);
 }
 
 .btn-warning{
-background:#f59e0b;
+background:white;
 border:none;
 border-radius:8px;
 font-weight:500;
@@ -201,7 +198,7 @@ transition:0.3s;
 }
 
 .btn-warning:hover{
-background:#d97706;
+background:red;
 transform:translateY(-2px);
 box-shadow:0 4px 12px rgba(245,158,11,0.3);
 }
@@ -225,10 +222,6 @@ color:#3b82f6;
 @media(max-width:768px){
 .admin-heading h1{
 font-size:28px;
-}
-
-.sort-controls{
-gap:10px;
 }
 
 .form-select{
@@ -261,7 +254,6 @@ font-size:12px;
   </a>
 
   <div class="ms-auto d-flex gap-2">
-    <a class="btn btn-outline-light nav-btn" href="/dashboard"><i class="fas fa-user-circle me-2"></i>User Dashboard</a>
     <a class="btn btn-light nav-btn" href="/logout"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
   </div>
   
@@ -272,18 +264,6 @@ font-size:12px;
   <div class="admin-heading">
     <h1><i class="fas fa-crown me-3"></i>Admin Dashboard</h1>
     <p>Monitor user activity and manage resume submissions</p>
-  </div>
-
-  <div class="sort-controls">
-    <label for="sortSelect" style="color:rgba(255,255,255,0.8); font-weight:500;">Sort by:</label>
-    <select class="form-select w-auto" id="sortSelect">
-      <option value="">Choose sorting...</option>
-      <option value="name" {% if sort_by == 'name' %}selected{% endif %}>Name</option>
-      <option value="email" {% if sort_by == 'email' %}selected{% endif %}>Email</option>
-      <option value="upload_count" {% if sort_by == 'upload_count' %}selected{% endif %}>Upload Count</option>
-      <option value="highest_accuracy" {% if sort_by == 'highest_accuracy' %}selected{% endif %}>Highest Accuracy</option>
-      <option value="average_accuracy" {% if sort_by == 'average_accuracy' %}selected{% endif %}>Average Accuracy</option>
-    </select>
   </div>
 
   {% if pending_requests %}
@@ -323,7 +303,7 @@ font-size:12px;
   <div class="glass-card">
     <div class="section-heading">
       <i class="fas fa-users"></i>
-      All Users (Total: {{ resumes|length }})
+      All Users (Total: {{ users|length }})
     </div>
     <div class="table-responsive">
       <table class="table table-borderless align-middle">
@@ -332,39 +312,40 @@ font-size:12px;
             <th>User Name</th>
             <th>Email</th>
             <th>Uploads</th>
-            <th>Resume Details</th>
             <th>Role</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {% for item in resumes %}
+          {% for item in users %}
           <tr>
-            <td>{{ item['name'] }}</td>
+            <td><a href="/admin/user/{{ item['id'] }}" style="color: black; text-decoration: none; font-weight: 500;">{{ item['name'] }}</a></td>
             <td>{{ item['email'] }}</td>
             <td><span style="background:rgba(59,130,246,0.2); padding:4px 12px; border-radius:20px; font-weight:600;">{{ item['upload_count'] }}</span></td>
-            <td>{{ item['resume_details'] or 'No uploads' }}</td>
             <td>
               {% if item['role'] == 'admin' %}
-              <span style="background:rgba(245,158,11,0.2); color:#fbbf24; padding:4px 12px; border-radius:20px; font-weight:600;"><i class="fas fa-crown me-1"></i>Admin</span>
+              <span style="background:rgba(245,158,11,0.2); color:red; padding:4px 12px; border-radius:20px; font-weight:600;"><i class="fas fa-crown me-1"></i>Admin</span>
               {% else %}
-              <span style="background:rgba(107,114,128,0.2); color:#d1d5db; padding:4px 12px; border-radius:20px; font-weight:600;">User</span>
+              <span style="background:rgba(107,114,128,0.2); color:vlack; padding:4px 12px; border-radius:20px; font-weight:600;">User</span>
               {% endif %}
             </td>
             <td class="d-flex flex-wrap gap-2">
               {% if item['role'] == 'user' %}
               <a href="/update_role/{{ item['id'] }}/admin" class="btn btn-sm btn-success"><i class="fas fa-shield-alt me-1"></i>Make Admin</a>
-              {% else %}
-              <a href="/update_role/{{ item['id'] }}/user" class="btn btn-sm btn-warning"><i class="fas fa-user me-1"></i>Remove Admin</a>
               {% endif %}
               {% if item['id'] != current_user_id %}
               <a href="/delete_user/{{ item['id'] }}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this user and all their resumes?')"><i class="fas fa-trash me-1"></i>Delete</a>
+              {% endif %}
+              {% if item['role'] == 'admin' and item['id'] != current_user_id %}
+              <a href="/update_role/{{ item['id'] }}/user" class="btn btn-sm btn-warning"><i class="fas fa-user me-1"></i>Remove Admin</a>
+              {% elif item['role'] == 'admin' %}
+              <span style="background-color: white; padding: 6px 12px; border-radius: 8px;">&nbsp;</span>
               {% endif %}
             </td>
           </tr>
           {% else %}
           <tr>
-            <td colspan="6" class="text-center text-muted" style="padding:30px;">
+            <td colspan="5" class="text-center text-muted" style="padding:30px;">
               <i class="fas fa-inbox me-2"></i>No users found.
             </td>
           </tr>
@@ -374,16 +355,6 @@ font-size:12px;
     </div>
   </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  document.getElementById('sortSelect').addEventListener('change', function() {
-    const sortValue = this.value;
-    if (sortValue) {
-      window.location.href = `/admin?sort=${sortValue}`;
-    }
-  });
-</script>
 
 </body>
 </html>

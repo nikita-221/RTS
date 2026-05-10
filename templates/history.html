@@ -179,7 +179,7 @@ box-shadow: 0 8px 20px rgba(255,255,255,0.05);
 padding:18px;
 vertical-align:middle;
 border:none;
-color:black;
+color:#000000;
 font-size:15px;
 font-weight:600;
 text-shadow: 0 0 2px rgba(255,255,255,0.10);
@@ -193,7 +193,7 @@ margin-right:8px;
 
 /* Date */
 .history-table tbody td:nth-child(1){
-color:black;
+color:#000000;
 font-weight:600;
 }
 
@@ -208,7 +208,7 @@ text-overflow:ellipsis;
 
 /* Keywords */
 .history-table tbody td:nth-child(5){
-color:black;
+color:#000000;
 font-weight:700;
 }
 
@@ -348,7 +348,6 @@ to{
 opacity:1;
 transform:translateY(0);
 }
-
 }
 
 /* Responsive */
@@ -447,10 +446,6 @@ in one intelligent dashboard.
 <a href="/history?sort=score_asc" class="btn btn-sm btn-outline-light">Lowest Accuracy</a>
 </div>
 </div>
-{% else %}
-<div class="alert alert-info mt-4" style="background:rgba(59,130,246,0.2); border:1px solid rgba(59,130,246,0.4); color:#bfdbfe; border-radius:12px;">
-<i class="fas fa-lock me-2"></i><strong>Admin-only feature:</strong> Only admins can sort resume data. Contact your admin for sorting assistance.
-</div>
 {% endif %}
 
 </div>
@@ -520,8 +515,9 @@ in one intelligent dashboard.
 <td>
 
 <i class="fa-solid fa-file-lines"></i>
-
-{{ item['filename'] }}
+<a href="/resume/{{ item['id'] }}" class="text-dark text-decoration-none" target="_blank" style="margin-left:8px; font-weight:600; color:#000000;">
+  {{ item['filename'] }} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.85em; color:#000000;"></i>
+</a>
 
 </td>
 
